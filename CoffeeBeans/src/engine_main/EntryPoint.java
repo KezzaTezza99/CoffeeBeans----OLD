@@ -1,6 +1,14 @@
 package engine_main;
 import javax.swing.*;
 
+//TODO: Things to implement to the engine
+/*
+    1- Collision
+    2- GameObjects
+    3- Basic UI
+    4- Sounds
+ */
+
 public class EntryPoint {
     public static void main(String[] args) {
         /*
