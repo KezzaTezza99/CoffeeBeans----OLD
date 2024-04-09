@@ -1,10 +1,22 @@
 package engine_main;
+import entity.Player;
 import tile.Tile;
 import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The game window is responsible for creating a panel that tile manager can draw tiles too to create the game world.
+ * Game window will store lots of useful information decided by the user such as
+ * tile size
+ * scale
+ * aspect ratio
+ * screen width and height
+ * The game window will also be responsible for creating the input manager class and a default player character
+ * by default the window will use 16x16 sprites that scale to 48x48 tiles with a max col and row of 16x12 giving an aspect ratio of 4:3.
+ * By default, the window will have a black background i.e., doesn't draw any tiles but will provide a moveable player character on the screen
+ */
 public class GameWindow extends JPanel implements Runnable {
     //SCREEN SETTINGS
     //Tile refers to a collection of pixels on screen that sprites etc. will occupy (16x16, 32x32, 64x64)
@@ -24,8 +36,12 @@ public class GameWindow extends JPanel implements Runnable {
     Thread gameThread;
     int FPS = 60;
 
+    //TODO: Can I do this better?
     //Tile manager to manage the placement of tiles
-    TileManager tileManager = new TileManager(this);
+    InputHandler input = new InputHandler();                                //Input handler for handling user input
+    Player player = new Player(this, input);                    //Basic player class that will act as a default player controller
+    TileManager tileManager = new TileManager(this);            //Tile manager basically managers a 2D array that stores tiles and data
+                                                                            //to display in each tile (group of pixels on screen i.e., 16x16)
 
     //Want more control over these parameters in case a game wants to use different size tiles, aspect ratios etc.
     public GameWindow(int ogTileSize, int scale, int maxScreenCol, int maxScreenRow) {
@@ -44,7 +60,7 @@ public class GameWindow extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
-        //this.addKeyListener(input);
+        this.addKeyListener(input);
         this.setFocusable(true);
     }
 
@@ -88,7 +104,7 @@ public class GameWindow extends JPanel implements Runnable {
     }
 
     public void update() {
-        //Will update the player here
+        player.update();
     }
 
     public void paintComponent(Graphics graphics) {
@@ -97,6 +113,8 @@ public class GameWindow extends JPanel implements Runnable {
 
         //Drawing the tiles
         tileManager.draw(graphics2D);
+        //Drawing the player
+        player.draw(graphics2D);
 
         //Disposing of the graphics
         graphics2D.dispose();

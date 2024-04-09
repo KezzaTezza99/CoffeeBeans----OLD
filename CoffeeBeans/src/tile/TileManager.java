@@ -7,6 +7,16 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * The tile manager is responsible for creating and storing data that will make up the game window.
+ * Tiles will be predetermined sizes set in the GameWindow by the user i.e., 16x16, these 16x16 sprites
+ * will take up a 16x16 tile in the world / game. All graphical objects i.e., sprites or background tiles will
+ * be stored in an array with all the necessary URLs for loading the file from the res folder
+ * ---------------------------------------------------------------------------------------------------------------------
+ * mapTileData will then store a 2D array that holds information on what tile is being drawn in each tile for the
+ * width and height of the entire game window
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
 public class TileManager {
     //Need access to the game window to draw the tiles to the screen
     GameWindow gameWindow;
@@ -45,6 +55,7 @@ public class TileManager {
     }
 
     public void draw(Graphics2D graphics2D) {
-        graphics2D.drawImage(tiles[0].image, 0, 0, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+        //This is how you draw a tile image to the screen by default the engine will not draw anything
+        //graphics2D.drawImage(tiles[0].image, 0, 0, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
     }
 }
