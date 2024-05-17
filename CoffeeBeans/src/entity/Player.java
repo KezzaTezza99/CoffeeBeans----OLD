@@ -2,6 +2,7 @@ package entity;
 
 import engine_main.GameWindow;
 import engine_main.InputHandler;
+import engine_main.physics.AABB;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,18 +15,29 @@ public class Player extends Entity {
     GameWindow gameWindow;
     InputHandler input;
 
+    //The players position on the screen
+    public final int screenX;
+    public final int screenY;
+
     public Player(GameWindow gameWindow, InputHandler inputHandler) {
         this.gameWindow = gameWindow;
         this.input = inputHandler;
 
-        //Setting default starting position for the player
-        x = 100;
-        y = 100;
+        //Setting the screen to the centre of a map (centre of a screen and centre of that tile)
+        screenX = gameWindow.getScreenWidth() / 2 - (gameWindow.getTileSize() / 2);
+        screenY = gameWindow.getScreenHeight() / 2 - (gameWindow.getTileSize() / 2);
+
+        //Setting default starting position for the player in the world
+        x = gameWindow.getTileSize() * 2;
+        y = gameWindow.getTileSize() * 2;
 
         //Setting players speed and default starting position
         speed = 4;
         direction = "down";
 
+        collisionBox = new AABB(8, 16, 32, 32);
+
+        //Setting the player to be the centre of the screen
         loadPlayerSprites();
     }
 
@@ -76,6 +88,12 @@ public class Player extends Entity {
                 spriteCounter = 0;
             }
         }
+
+        //TODO: Set these with the player movement inside the if statements
+        collisionBox.setX(x);
+        collisionBox.setY(y);
+
+        gameWindow.collisionManager.checkEntity(this);
     }
 
     public void draw(Graphics2D graphics2D) {
@@ -87,5 +105,7 @@ public class Player extends Entity {
             default -> null;
         };
         graphics2D.drawImage(image, x, y, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+        //graphics2D.fillRect((int) collisionBox.getX(), (int) collisionBox.getY(), (int) collisionBox.getWidth(), (int) collisionBox.getHeight());
+        collisionBox.drawCollider(graphics2D, Color.GREEN);
     }
 }

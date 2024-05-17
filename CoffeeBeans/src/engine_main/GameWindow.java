@@ -1,6 +1,7 @@
 package engine_main;
+import engine_main.managers.CollisionManager;
+import entity.Enemy;
 import entity.Player;
-import tile.Tile;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -18,6 +19,7 @@ import java.awt.*;
  * By default, the window will have a black background i.e., doesn't draw any tiles but will provide a moveable player character on the screen
  */
 public class GameWindow extends JPanel implements Runnable {
+    //TODO: make these static? Can then just access them using GameWindow.tileSize etc, might fix my issues?
     //SCREEN SETTINGS
     //Tile refers to a collection of pixels on screen that sprites etc. will occupy (16x16, 32x32, 64x64)
     final int originalTileSize;                     //Will be the sprites original size i.e., 16x16
@@ -32,19 +34,39 @@ public class GameWindow extends JPanel implements Runnable {
     final int screenWidth;                          //The width of the game window
     final int screenHeight;                         //The height of the game window
 
+    //WORLD SETTINGS
+    public final int maxWorldCol;                          //The max amount of tiles a world can store on the X
+    public final int maxWorldRow;                          //The max amount of tiles a world can store on the Y
+
     //Using threads to create delta time for the game loop
     Thread gameThread;
     int FPS = 60;
 
+/*
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //          TESTING
     //TODO: Can I do this better?
     //Tile manager to manage the placement of tiles
-    InputHandler input = new InputHandler();                                //Input handler for handling user input
-    Player player = new Player(this, input);                    //Basic player class that will act as a default player controller
-    TileManager tileManager = new TileManager(this);            //Tile manager basically managers a 2D array that stores tiles and data
-                                                                            //to display in each tile (group of pixels on screen i.e., 16x16)
+    public InputHandler input = new InputHandler();                                //Input handler for handling user input
+    public Player player = new Player(this, input);                    //Basic player class that will act as a default player controller
+    public TileManager tileManager = new TileManager(this);            //Tile manager basically managers a 2D array that stores tiles and data
+    //to display in each tile (group of pixels on screen i.e., 16x16)
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //          TESTING - new
+    //TODO: Can I do this better?
+    //Tile manager to manage the placement of tiles
+    public InputHandler input;
+    public Player player;
+    public TileManager tileManager;
+    public CollisionManager collisionManager;
+    public Enemy enemy;
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //Want more control over these parameters in case a game wants to use different size tiles, aspect ratios etc.
-    public GameWindow(int ogTileSize, int scale, int maxScreenCol, int maxScreenRow) {
+    public GameWindow(int ogTileSize, int scale, int maxScreenCol, int maxScreenRow, int maxWorldCol, int maxWorldRow) {
         //Initialing the screen settings
         this.originalTileSize = ogTileSize;
         this.scale = scale;
@@ -56,12 +78,29 @@ public class GameWindow extends JPanel implements Runnable {
         this.screenWidth = tileSize * maxScreenCol;
         this.screenHeight = tileSize * maxScreenRow;
 
+        //Setting the world settings
+        this.maxWorldCol = maxWorldCol;
+        this.maxWorldRow = maxWorldRow;
+
+        init();
+
         //Setting up the game window
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(input);
         this.setFocusable(true);
+
+        System.out.println(STR."The max screen col and row from creation: \{getMaxScreenCol()} \{getMaxScreenRow()}");
+
+    }
+
+    public void init() {
+        input = new InputHandler();
+        player = new Player(this, input);
+        tileManager = new TileManager(this);
+        collisionManager = new CollisionManager(this);
+        enemy = new Enemy(this);
     }
 
     public void startGameThread() {
@@ -115,7 +154,8 @@ public class GameWindow extends JPanel implements Runnable {
         tileManager.draw(graphics2D);
         //Drawing the player
         player.draw(graphics2D);
-
+        //Drawing the enemy
+        enemy.draw(graphics2D);
         //Disposing of the graphics
         graphics2D.dispose();
     }
@@ -126,27 +166,23 @@ public class GameWindow extends JPanel implements Runnable {
     public int getOriginalTileSize() {
         return originalTileSize;
     }
-
     public int getScale() {
         return scale;
     }
-
     public int getTileSize() {
         return tileSize;
     }
-
     public int getMaxScreenCol() {
-        return maxScreenCol;
+        return this.maxScreenCol;
     }
-
     public int getMaxScreenRow() {
         return maxScreenRow;
     }
-
+    public int getMaxWorldCol() { return maxWorldCol; }
+    public int getMaxWorldRow() { return maxWorldRow; }
     public int getScreenWidth() {
         return screenWidth;
     }
-
     public int getScreenHeight() {
         return screenHeight;
     }

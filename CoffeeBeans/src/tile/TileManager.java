@@ -4,7 +4,10 @@ import engine_main.GameWindow;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Objects;
 
 /**
@@ -34,10 +37,12 @@ public class TileManager {
         //--------------------------------------------------------------------------------------------------------------
         //Setting the size of the tile array (type of tiles in the game) (temp hard coding this size)
         tiles = new Tile[10];
-        mapTileData = new int[gameWindow.getMaxScreenCol()][gameWindow.getMaxScreenRow()];
-
+        int i = gameWindow.getMaxScreenCol();
+        int j = gameWindow.getMaxScreenRow();
+        mapTileData = new int[i][j];
         //Loading the tile images
         getTileImage();
+        loadGameWorld("/maps/map01.txt");
     }
 
     public void getTileImage() {
@@ -49,13 +54,50 @@ public class TileManager {
         try {
             tiles[0] = new Tile();
             tiles[0].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/grass.png")));
+
+            tiles[1] = new Tile();
+            tiles[1].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/test.png")));
+            tiles[1].collision = true;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public void loadGameWorld(String worldTextFilePath) {
+        //Provide a filePath to a worldMapTextFile that will store a grid of numbers.
+        //That decided what kind of tile should be drawn, world maps allow the game to have a bigger
+        //playable area compared to the screen.
+        try {
+            InputStream inputStream = getClass().getResourceAsStream(worldTextFilePath);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)));
+
+            int col = 0;
+            int row = 0;
+
+            while(col < gameWindow.getMaxWorldCol() && row < gameWindow.getMaxWorldRow()) {
+                //Reading the text file while it's in within limits of the screen size
+                String line = bufferedReader.readLine();
+
+                while(col < gameWindow.getMaxWorldCol()) {
+                    String[] numbers = line.split(" ");
+                    int num = Integer.parseInt(numbers[col]);
+
+                    mapTileData[col][row] = num;
+                    col++;
+                }
+                if(col == gameWindow.getMaxWorldCol()) {
+                    col = 0;
+                    row++;
+                }
+            }
+            bufferedReader.close();
+        } catch(Exception ignored) {
+        }
+    }
+
     public void draw(Graphics2D graphics2D) {
         //This is how you draw a tile image to the screen by default the engine will not draw anything
-        //graphics2D.drawImage(tiles[0].image, 0, 0, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+       //¬ graphics2D.drawImage(tiles[1].image, gameWindow.getScreenWidth() / 2, gameWindow.getScreenHeight() / 2, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
     }
 }

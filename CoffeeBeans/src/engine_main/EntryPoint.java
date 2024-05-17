@@ -1,8 +1,11 @@
 package engine_main;
+import engine_main.physics.AABB;
+
 import javax.swing.*;
 
 //TODO: Things to implement to the engine
 /*
+    Current - Worlds and Camera implementation
     1- Collision
     2- GameObjects
     3- Basic UI
@@ -31,7 +34,7 @@ public class EntryPoint {
 
         //Adding the game window to the JFrame
         //Here we can specify the tileSize, scale, aspect ratio etc. to match specific games you want to create
-        GameWindow gameWindow = new GameWindow(16, 3, 16, 12);
+        GameWindow gameWindow = new GameWindow(16, 3, 16, 12, 50, 50);
         window.add(gameWindow);
 
         //Making the window the size of the desired game window
