@@ -91,8 +91,7 @@ public class GameWindow extends JPanel implements Runnable {
         this.addKeyListener(input);
         this.setFocusable(true);
 
-        System.out.println(STR."The max screen col and row from creation: \{getMaxScreenCol()} \{getMaxScreenRow()}");
-
+        //System.out.println(STR."The max screen col and row from creation: \{getMaxScreenCol()} \{getMaxScreenRow()}");
     }
 
     public void init() {
@@ -135,7 +134,7 @@ public class GameWindow extends JPanel implements Runnable {
                 drawCount++;
             }
             if (timer >= 1000000000) {
-                System.out.printf("FPS: %d%n", drawCount);
+                //System.out.printf("FPS: %d%n", drawCount);
                 drawCount = 0;
                 timer = 0;
             }
@@ -160,6 +159,35 @@ public class GameWindow extends JPanel implements Runnable {
         graphics2D.dispose();
     }
 
+    //TODO: UTIL CLASS?
+    //------------------------------------------------------------------------------------------------------------------
+    //                          HELPFUL METHODS
+    //  Transforming x,y coordinates into column and row positions and vice versa
+    //------------------------------------------------------------------------------------------------------------------
+    public int getPositionUpColumn(int currentYPos) {
+        return (currentYPos - tileSize) / tileSize;
+    }
+    public int getPositionUpWorld(int currentYPos) {
+        return currentYPos - tileSize;
+    }
+    public int getPositionDownColumn(int currentYPos) {
+        return (currentYPos + tileSize) / tileSize;
+    }
+    public int getPositionDownWorld(int currentYPos) {
+        return currentYPos + tileSize;
+    }
+    public int getPositionLeftRow(int currentXPos) {
+        return (currentXPos - tileSize) / tileSize;
+    }
+    public int getPositionLeftWorld(int currentXPos) {
+        return currentXPos - tileSize;
+    }
+    public int getPositionRightRow(int currentXPos) {
+        return (currentXPos + tileSize) / tileSize;
+    }
+    public int getPositionRightWorld(int currentXPos) {
+        return currentXPos + tileSize;
+    }
     //------------------------------------------------------------------------------------------------------------------
     //                          GETTER METHODS
     //------------------------------------------------------------------------------------------------------------------

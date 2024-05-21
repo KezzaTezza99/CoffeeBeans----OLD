@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 //TODO: Pass a lot of the info in as params? So creating a player can decide on unique settings
+//TODO: The way im handling collisions and stuff is messy I could defo do with refactoring all of it!!!
+
 public class Player extends Entity {
     GameWindow gameWindow;
     InputHandler input;
@@ -31,11 +33,15 @@ public class Player extends Entity {
         x = gameWindow.getTileSize() * 2;
         y = gameWindow.getTileSize() * 2;
 
+        //Setting the players position to be correct to the tile it's starting in
+        tilePosX = x / gameWindow.getTileSize();
+        tilePosY = y / gameWindow.getTileSize();
+
         //Setting players speed and default starting position
         speed = 4;
         direction = "down";
 
-        collisionBox = new AABB(8, 16, 32, 32);
+        collisionBox = new AABB(x, y, 32, 32);
 
         //Setting the player to be the centre of the screen
         loadPlayerSprites();
@@ -59,27 +65,28 @@ public class Player extends Entity {
     }
 
     public void update() {
-        if (input.upPressed) {
+        if (input.upPressed && canMoveUp) {
             direction = "up";
             y -= speed;
-        }
-        if (input.downPressed) {
+        } else if (input.downPressed && canMoveDown) {
             direction = "down";
             y += speed;
-        }
-        if (input.leftPressed) {
+        } else if (input.leftPressed && canMoveLeft) {
             direction = "left";
             x -= speed;
-        }
-        if (input.rightPressed) {
+        } else if (input.rightPressed && canMoveRight) {
             direction = "right";
             x += speed;
         }
 
+        //Checking collisions
+        gameWindow.collisionManager.checkEntity(this);
+        gameWindow.collisionManager.tileIsFree(this);
+
         //Way of animating could come up with a smarter and better way of doing this
         if(input.isKeyPressed) {
             spriteCounter++;
-            if (spriteCounter > 12) {
+            if (spriteCounter > 10) {
                 if (spriteNumber == 1) {
                     spriteNumber = 2;
                 } else if (spriteNumber == 2) {
@@ -93,7 +100,8 @@ public class Player extends Entity {
         collisionBox.setX(x);
         collisionBox.setY(y);
 
-        gameWindow.collisionManager.checkEntity(this);
+        tilePosX = x / gameWindow.getTileSize();
+        tilePosY = y / gameWindow.getTileSize();
     }
 
     public void draw(Graphics2D graphics2D) {
@@ -105,7 +113,7 @@ public class Player extends Entity {
             default -> null;
         };
         graphics2D.drawImage(image, x, y, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
-        //graphics2D.fillRect((int) collisionBox.getX(), (int) collisionBox.getY(), (int) collisionBox.getWidth(), (int) collisionBox.getHeight());
         collisionBox.drawCollider(graphics2D, Color.GREEN);
+        graphics2D.setColor(Color.GREEN);
     }
 }

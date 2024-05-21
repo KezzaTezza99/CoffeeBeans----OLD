@@ -1,12 +1,7 @@
 package engine_main.managers;
-
 import engine_main.GameWindow;
 import entity.Entity;
 
-//ALL THIS CLASS NEEDS TO BE RESPONSIBLE FOR IS ENSURING THAT IT CAN DETECT AABB COLLISIONS!
-//Need to figure out the best way for it to do that though
-//Collision with tiles will be done differently? Should the TileManager handle that?
-//Logically this class should also be responsible for tile collisions
 public class CollisionManager {
     GameWindow gameWindow;          //Need access to the game window to get entities
 
@@ -14,12 +9,6 @@ public class CollisionManager {
         this.gameWindow = gameWindow;
     }
 
-    //TODO:
-    /*
-        - Entity at the moment we know is the player, should all entities have a tag? We then check the tag and decide on logic for colliding then
-        - Do we offload checking collisions to each individual Entity and they all have access to the collision manager? They then pass themselves to the
-          collision manager and then all check themselves against other objects using the GameWindow to access them?
-     */
     public void checkEntity(Entity entity) {
         //Maybe something like this?
         /*
@@ -40,8 +29,59 @@ public class CollisionManager {
          */
 
         //Working but will be messy for all entities to check collisions this way and react accordingly
-        if(entity.collisionBox.isCollidingWith(gameWindow.enemy.collisionBox)) {
+        if (entity.collisionBox.isCollidingWith(gameWindow.enemy.collisionBox)) {
             System.out.println("HIT");
+        }
+    }
+
+    public void tileIsFree(Entity entity) {
+        entity.canMoveUp = true; entity.canMoveDown = true; entity.canMoveLeft = true; entity.canMoveRight = true;
+
+        //Get the current position in the tile map array
+        int entitiesCurrentXInArray;
+        int entitiesCurrentYInArray;
+
+        int tile;
+
+        switch (entity.direction) {
+            case "up":
+                entitiesCurrentXInArray = (entity.x + (gameWindow.getTileSize()) / 2) / gameWindow.getTileSize();
+                entitiesCurrentYInArray = entity.y / gameWindow.getTileSize();
+
+                tile = gameWindow.tileManager.mapTileData[entitiesCurrentXInArray][entitiesCurrentYInArray];
+
+                if(gameWindow.tileManager.tiles[tile].collision) {
+                    System.out.println("Collision up");
+                    entity.canMoveUp = false;
+                }
+                break;
+            case "down":
+                entitiesCurrentXInArray = (entity.x + (gameWindow.getTileSize()) / 2) / gameWindow.getTileSize();
+                entitiesCurrentYInArray = entity.y  / gameWindow.getTileSize();
+
+                tile = gameWindow.tileManager.mapTileData[entitiesCurrentXInArray][entitiesCurrentYInArray + 1];
+                if(gameWindow.tileManager.tiles[tile].collision) {
+                    System.out.println("Collision down");
+                    entity.canMoveDown = false;
+                }
+            case "left":
+                entitiesCurrentXInArray = entity.x / gameWindow.getTileSize();
+                entitiesCurrentYInArray = (entity.y + (gameWindow.getTileSize()) / 2) / gameWindow.getTileSize();
+
+                tile = gameWindow.tileManager.mapTileData[entitiesCurrentXInArray][entitiesCurrentYInArray];
+                if(gameWindow.tileManager.tiles[tile].collision) {
+                    System.out.println("Collision left");
+                    entity.canMoveLeft = false;
+                }
+            case "right":
+                entitiesCurrentXInArray = (entity.x + gameWindow.getTileSize()) / gameWindow.getTileSize();
+                entitiesCurrentYInArray = (entity.y + (gameWindow.getTileSize() / 2))  / gameWindow.getTileSize();
+
+                tile = gameWindow.tileManager.mapTileData[entitiesCurrentXInArray][entitiesCurrentYInArray];
+                if(gameWindow.tileManager.tiles[tile].collision) {
+                    System.out.println("Collision right");
+                    entity.canMoveRight = false;
+                }
         }
     }
 }

@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 public class Entity {
     //GENERIC ENTITY STUFF
     public int x, y;                                        //Stores the entities x and y position
+    public int tilePosX, tilePosY;                          //The entities position when converted into the TileManager array that stores tile positions, useful for calculating what tile an entity is on
     public int speed;                                       //Stores the entities movement speed
 
     //ANIMATION STUFF
@@ -25,4 +26,7 @@ public class Entity {
     //COLLISION STUFF
     public AABB collisionBox;
     public boolean isCollidable = false;
+
+    //TESTING STUFF TO DO WITH COLLISION HANDLING
+    public boolean canMoveUp = true, canMoveDown = true, canMoveLeft = true, canMoveRight = true;
 }

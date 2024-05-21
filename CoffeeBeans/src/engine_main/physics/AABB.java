@@ -8,6 +8,7 @@ public class AABB {
     private float width, height;                    //Dimensions of the box
 
     public AABB(float x, float y, float width, float height) {
+        System.out.printf("Being created with x, y: %f %f %n", x, y);
         this.x = x;
         this.y = y;
         this.width = width;
@@ -58,5 +59,9 @@ public class AABB {
     }
     public void setHeight(float height) {
         this.height = height;
+    }
+    public void setCoordinates(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 }

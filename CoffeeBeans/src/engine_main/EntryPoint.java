@@ -12,6 +12,8 @@ import javax.swing.*;
     4- Sounds
  */
 
+//Should re think how everything is linked as the engine is suffering from high cohesion
+
 public class EntryPoint {
     public static void main(String[] args) {
         /*
@@ -34,7 +36,7 @@ public class EntryPoint {
 
         //Adding the game window to the JFrame
         //Here we can specify the tileSize, scale, aspect ratio etc. to match specific games you want to create
-        GameWindow gameWindow = new GameWindow(16, 3, 16, 12, 50, 50);
+        GameWindow gameWindow = new GameWindow(16, 3, 16, 12, 16, 12);
         window.add(gameWindow);
 
         //Making the window the size of the desired game window
