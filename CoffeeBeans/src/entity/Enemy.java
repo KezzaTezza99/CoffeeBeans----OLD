@@ -16,8 +16,8 @@ public class Enemy extends Entity {
         this.gameWindow = gameWindow;
 
         //Setting the position of the enemy
-        x = gameWindow.getScreenWidth() / 2;
-        y = gameWindow.getScreenHeight() / 2;
+        x = 2 * gameWindow.getTileSize();
+        y = 2 * gameWindow.getTileSize();
 
         direction = "up";
 

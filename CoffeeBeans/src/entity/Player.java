@@ -26,12 +26,12 @@ public class Player extends Entity {
         this.input = inputHandler;
 
         //Setting the screen to the centre of a map (centre of a screen and centre of that tile)
-        screenX = gameWindow.getScreenWidth() / 2 - (gameWindow.getTileSize() / 2);
-        screenY = gameWindow.getScreenHeight() / 2 - (gameWindow.getTileSize() / 2);
+        screenX = gameWindow.getScreenWidth() / 2;
+        screenY = gameWindow.getScreenHeight() / 2;
 
-        //Setting default starting position for the player in the world
-        x = gameWindow.getTileSize() * 2;
-        y = gameWindow.getTileSize() * 2;
+        //Setting default starting position for the player in the world (which is centred to the screen)
+        x = screenX;
+        y = screenY;
 
         //Setting the players position to be correct to the tile it's starting in
         tilePosX = x / gameWindow.getTileSize();
@@ -82,6 +82,7 @@ public class Player extends Entity {
         //Checking collisions
         gameWindow.collisionManager.checkEntity(this);
         gameWindow.collisionManager.tileIsFree(this);
+        playerHasHitCamBounds();
 
         //Way of animating could come up with a smarter and better way of doing this
         if(input.isKeyPressed) {
@@ -102,6 +103,27 @@ public class Player extends Entity {
 
         tilePosX = x / gameWindow.getTileSize();
         tilePosY = y / gameWindow.getTileSize();
+    }
+
+    //TODO: Could probably just have one method that checks all the bounds instead but this is fine for testing rn
+    public void playerHasHitCamBounds() {
+        //First we check the upper bounds
+        if(gameWindow.camera.hasHitUpperBounds(tilePosY)) {
+
+        }
+
+        if(gameWindow.camera.hasHitLowerBounds(tilePosY)) {
+            //gameWindow.camera.setY(192);
+            gameWindow.camera.setCamera();
+        }
+
+        if(gameWindow.camera.hasHitLeftBounds(tilePosX)) {
+
+        }
+
+        if(gameWindow.camera.hasHitRightBounds(tilePosX)) {
+
+        }
     }
 
     public void draw(Graphics2D graphics2D) {

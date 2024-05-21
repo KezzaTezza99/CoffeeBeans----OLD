@@ -30,13 +30,10 @@ public class TileManager {
     //Tile info
     public Tile[] tiles;                             //Stores all the types of tiles in the game
     public int[][] mapTileData;                      //Stores info on all the tiles for every x,y space
-    public Tile[][] tileData;
 
     public TileManager(GameWindow gameWindow) {
         this.gameWindow = gameWindow;
-
         tiles = new Tile[11];
-
 
         //Loading the tile images
         getTileImage();
@@ -46,24 +43,8 @@ public class TileManager {
         // all games made with the engine to have an array that fits all types of tiles makes it more dynamic and usable
         //--------------------------------------------------------------------------------------------------------------
         //Setting the size of the tile array (type of tiles in the game) (temp hard coding this size) (length - 1 will be the tile that the map is initialized to)
-        mapTileData = new int[16][12];
-        tileData = new Tile[16][12];
-
-        for (int i = 0; i < mapTileData.length; i++){         // iterates each student
-            for (int j = 0; j < mapTileData[i].length; j++){  // iterates each grade
-                mapTileData[i][j] = 10;
-            }
-        }
-
-        for(int x = 0; x < 16; x++) {
-            for(int y = 0; y < 12; y++) {
-                tileData[x][y] = tiles[10];
-                //tileData[x][y].tileCollisionBox = new AABB(x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), 48, 48);
-            }
-        }
-
-        //loadGameWorld("/maps/map01.txt");
-        loadTest();
+        mapTileData = new int[gameWindow.maxWorldCol][gameWindow.maxWorldRow];
+        loadGameWorld("/maps/map02.txt");
     }
 
     public void getTileImage() {
@@ -91,15 +72,6 @@ public class TileManager {
         int index = mapTileData[x][y];
         if(tiles[index].collision) System.out.println("Oh no you have collided!");
         return tiles[index].collision;
-    }
-
-    //TODO: Actuall load map data
-    public void loadTest() {
-//        //The array will just be filled with numbers - each number will be related to a type of tile [0, 1, 2, 3] etc. [0 - grass, 1 - stone...]
-//        mapTileData[5][5] = 1;
-//        mapTileData[6][5] = 1;
-//        mapTileData[0][0] = 1;
-
     }
 
     public void loadGameWorld(String worldTextFilePath) {
@@ -132,47 +104,35 @@ public class TileManager {
         }
     }
 
-
-    //TODO: Actually draw the map
     public void draw(Graphics2D graphics2D) {
-        /*
-        //This is how you draw a tile image to the screen by default the engine will not draw anything
-        // graphics2D.drawImage(tiles[1].image, gameWindow.getScreenWidth() / 2 + 32, gameWindow.getScreenHeight() / 2+32, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+        //Drawing the map
+/*        for(int x = 0; x < gameWindow.maxWorldCol; x++) {
+            for(int y = 0; y < gameWindow.maxWorldRow; y++) {
+                int tile = mapTileData[x][y];
+                graphics2D.drawImage(tiles[tile].image, x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+            }
+        }*/
 
-/*        for(int y = 0; y < 12; y++) {
-            for(int x = 0; x < 16; x++) {
-                graphics2D.drawImage(tiles[0].image, x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+        System.out.println("Row: " + gameWindow.camera.getRow());
+        //Drawing the map using the camera
+        for(int x = gameWindow.camera.getCol(); x <= gameWindow.camera.getWidth(); x++) {
+            for(int y = gameWindow.camera.getRow(); y <= gameWindow.camera.getHeight(); y++) {
+                int tile = mapTileData[x][y];
+                graphics2D.drawImage(tiles[tile].image, x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
             }
         }
 
-        //graphics2D.drawImage(tiles[1].image, 5 * gameWindow.getTileSize(), 5 * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
-        //tiles[1].tileCollisionBox.drawCollider(graphics2D, Color.MAGENTA);
+        //TODO: Have a debug flag? Lets me have useful info displayed?
+        boolean debug = false;
 
-        graphics2D.drawImage(tiles[1].image, 0, 0, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
-        graphics2D.drawImage(tiles[1].image, 5 * gameWindow.getTileSize(), 5 * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
-        graphics2D.drawImage(tiles[1].image, 6 * gameWindow.getTileSize(), 5 * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
-
-        for(int y = 0; y < 12; y++) {
-            for(int x = 0; x < 16; x++) {
-                //graphics2D.drawImage(tileData[x][y].image, x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+        if(debug) {
+            //Drawing a grid - Useful debugging info
+            graphics2D.setColor(Color.white);
+            for (int y = 0; y < 12; y++) {
+                for (int x = 0; x < 16; x++) {
+                    graphics2D.drawRect(x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize());
+                }
             }
         }
-
-        //tileData[0][0].tileCollisionBox = new AABB(0, 0, 48, 48);
-       // tileData[1][0].tileCollisionBox = new AABB(48, 48, 48, 48);
-
-        //tileData[0][0].tileCollisionBox.drawCollider(graphics2D, Color.red);
-        //tileData[1][0].tileCollisionBox.drawCollider(graphics2D, Color.yellow);
-
-        //Drawing a grid
-        graphics2D.setColor(Color.white);
-        for(int y = 0; y < 12; y++) {
-            for(int x = 0; x < 16; x++) {
-                graphics2D.drawRect(x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize());
-            }
-        }
-        */
-
-
     }
 }

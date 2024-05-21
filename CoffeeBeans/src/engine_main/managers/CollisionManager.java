@@ -38,8 +38,8 @@ public class CollisionManager {
         entity.canMoveUp = true; entity.canMoveDown = true; entity.canMoveLeft = true; entity.canMoveRight = true;
 
         //Get the current position in the tile map array
-        int entitiesCurrentXInArray;
-        int entitiesCurrentYInArray;
+        int entitiesCurrentXInArray = gameWindow.getCurrentColumnPosition(entity.x);
+        int entitiesCurrentYInArray = gameWindow.getCurrentRowPos(entity.y);
 
         int tile;
 

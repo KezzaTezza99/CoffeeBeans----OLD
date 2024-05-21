@@ -1,4 +1,5 @@
 package engine_main;
+import engine_main.graphics.Camera;
 import engine_main.managers.CollisionManager;
 import entity.Enemy;
 import entity.Player;
@@ -63,6 +64,7 @@ public class GameWindow extends JPanel implements Runnable {
     public TileManager tileManager;
     public CollisionManager collisionManager;
     public Enemy enemy;
+    public Camera camera;
     //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //Want more control over these parameters in case a game wants to use different size tiles, aspect ratios etc.
@@ -100,6 +102,7 @@ public class GameWindow extends JPanel implements Runnable {
         tileManager = new TileManager(this);
         collisionManager = new CollisionManager(this);
         enemy = new Enemy(this);
+        camera = new Camera(this);
     }
 
     public void startGameThread() {
@@ -135,11 +138,14 @@ public class GameWindow extends JPanel implements Runnable {
             }
             if (timer >= 1000000000) {
                 //System.out.printf("FPS: %d%n", drawCount);
+                camera.cameraInfo();
                 drawCount = 0;
                 timer = 0;
             }
         }
     }
+    //TODO: WE NEED TO MOVE THE CAMERA DOWN? IT LOOKS LIKE IT IS WORKING BUT HAVE A LOOK TO SEE IF THE NEW WIDTH AND HEIGHT ACTUALLY MOVES TO COVER THE NEW COL / ROW THE PLAYER IS IN
+    //THE BOUNDS DEFINITELY STILL GET COLLIDED SO IT HASN'T TRANSLATED
 
     public void update() {
         player.update();
@@ -155,39 +161,25 @@ public class GameWindow extends JPanel implements Runnable {
         player.draw(graphics2D);
         //Drawing the enemy
         enemy.draw(graphics2D);
+        //Drawing the camera
+        camera.drawCamera(graphics2D);
         //Disposing of the graphics
         graphics2D.dispose();
     }
 
-    //TODO: UTIL CLASS?
-    //------------------------------------------------------------------------------------------------------------------
-    //                          HELPFUL METHODS
-    //  Transforming x,y coordinates into column and row positions and vice versa
-    //------------------------------------------------------------------------------------------------------------------
-    public int getPositionUpColumn(int currentYPos) {
-        return (currentYPos - tileSize) / tileSize;
+
+    public int getCurrentColumnPosition(int xPos) { return xPos / tileSize; }
+    public int getCurrentRowPos(int yPos) { return yPos / tileSize; }
+
+    //Return true if the player is on the bounds otherwise return false
+    public boolean isPlayerOnBounds(int currentXPos, int currentYPos) {
+        System.out.println(currentYPos);
+        if(currentYPos == 0 || currentYPos == (this.maxWorldRow - 1)) {
+            return true;
+        }
+        return false;
     }
-    public int getPositionUpWorld(int currentYPos) {
-        return currentYPos - tileSize;
-    }
-    public int getPositionDownColumn(int currentYPos) {
-        return (currentYPos + tileSize) / tileSize;
-    }
-    public int getPositionDownWorld(int currentYPos) {
-        return currentYPos + tileSize;
-    }
-    public int getPositionLeftRow(int currentXPos) {
-        return (currentXPos - tileSize) / tileSize;
-    }
-    public int getPositionLeftWorld(int currentXPos) {
-        return currentXPos - tileSize;
-    }
-    public int getPositionRightRow(int currentXPos) {
-        return (currentXPos + tileSize) / tileSize;
-    }
-    public int getPositionRightWorld(int currentXPos) {
-        return currentXPos + tileSize;
-    }
+
     //------------------------------------------------------------------------------------------------------------------
     //                          GETTER METHODS
     //------------------------------------------------------------------------------------------------------------------
