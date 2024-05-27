@@ -29,19 +29,28 @@ public class Player extends Entity {
         screenX = gameWindow.getScreenWidth() / 2;
         screenY = gameWindow.getScreenHeight() / 2;
 
-        //Setting default starting position for the player in the world (which is centred to the screen)
+        //Setting default starting position for the player in the world (which is centred to the screen and also centre of the map)
         x = screenX;
         y = screenY;
+        worldX = ((gameWindow.maxWorldCol / 2) * gameWindow.getTileSize());
+        worldY = ((gameWindow.maxWorldRow / 2) * gameWindow.getTileSize());
+
+        //x = gameWindow.maxWorldCol / 2;
+        //y = gameWindow.maxWorldRow / 2;
 
         //Setting the players position to be correct to the tile it's starting in
-        tilePosX = x / gameWindow.getTileSize();
-        tilePosY = y / gameWindow.getTileSize();
+        tilePosScreenX = x / gameWindow.getTileSize();
+        tileScreenPosY = y / gameWindow.getTileSize();
+        tileWorldPosX = worldX / gameWindow.getTileSize();
+        tileWorldPosY = worldY / gameWindow.getTileSize();
 
         //Setting players speed and default starting position
         speed = 4;
         direction = "down";
 
         collisionBox = new AABB(x, y, 32, 32);
+
+        System.out.printf("Player INFO: x: %d y: %d world x: %d world y: %d tile x: %d tile y: %d%n", x, y, worldX, worldY, tilePosScreenX, tileScreenPosY);
 
         //Setting the player to be the centre of the screen
         loadPlayerSprites();
@@ -101,27 +110,27 @@ public class Player extends Entity {
         collisionBox.setX(x);
         collisionBox.setY(y);
 
-        tilePosX = x / gameWindow.getTileSize();
-        tilePosY = y / gameWindow.getTileSize();
+        tilePosScreenX = x / gameWindow.getTileSize();
+        tileScreenPosY = y / gameWindow.getTileSize();
     }
 
     //TODO: Could probably just have one method that checks all the bounds instead but this is fine for testing rn
     public void playerHasHitCamBounds() {
         //First we check the upper bounds
-        if(gameWindow.camera.hasHitUpperBounds(tilePosY)) {
+        if(gameWindow.camera.hasHitUpperBounds(tileScreenPosY)) {
 
         }
 
-        if(gameWindow.camera.hasHitLowerBounds(tilePosY)) {
+        if(gameWindow.camera.hasHitLowerBounds(tileScreenPosY)) {
             //gameWindow.camera.setY(192);
-            gameWindow.camera.setCamera();
+            //gameWindow.camera.setCamera();
         }
 
-        if(gameWindow.camera.hasHitLeftBounds(tilePosX)) {
+        if(gameWindow.camera.hasHitLeftBounds(tilePosScreenX)) {
 
         }
 
-        if(gameWindow.camera.hasHitRightBounds(tilePosX)) {
+        if(gameWindow.camera.hasHitRightBounds(tilePosScreenX)) {
 
         }
     }

@@ -30,6 +30,7 @@ public class TileManager {
     //Tile info
     public Tile[] tiles;                             //Stores all the types of tiles in the game
     public int[][] mapTileData;                      //Stores info on all the tiles for every x,y space
+    public int[][] screenTileData;
 
     public TileManager(GameWindow gameWindow) {
         this.gameWindow = gameWindow;
@@ -44,7 +45,8 @@ public class TileManager {
         //--------------------------------------------------------------------------------------------------------------
         //Setting the size of the tile array (type of tiles in the game) (temp hard coding this size) (length - 1 will be the tile that the map is initialized to)
         mapTileData = new int[gameWindow.maxWorldCol][gameWindow.maxWorldRow];
-        loadGameWorld("/maps/map02.txt");
+        screenTileData = new int[gameWindow.getMaxScreenCol()][gameWindow.getMaxScreenRow()];
+        loadGameWorld("/maps/world03.txt");
     }
 
     public void getTileImage() {
@@ -58,6 +60,11 @@ public class TileManager {
             tiles[1] = new Tile();
             tiles[1].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/test.png")));
             tiles[1].collision = true;
+
+            for(int i = 2; i <=9; i++) {
+                tiles[i] = new Tile();
+                tiles[i].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/defaultTile.png")));
+            }
 
             tiles[10] = new Tile();
             tiles[10].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/defaultTile.png")));
@@ -105,34 +112,74 @@ public class TileManager {
     }
 
     public void draw(Graphics2D graphics2D) {
-        //Drawing the map
-/*        for(int x = 0; x < gameWindow.maxWorldCol; x++) {
-            for(int y = 0; y < gameWindow.maxWorldRow; y++) {
+/*        //Drawing the map using the camera - NEW
+        int x1 = 0;
+        int y1 = 0;
+        int counter = 0;
+
+        //Do we need to use a different x,y in draw method...
+        for(int x = gameWindow.screenX1; x <= gameWindow.screenX2; x++) {
+            for(int y = gameWindow.screenY1; y <= gameWindow.screenY2; y++) {
+                //int tile = mapTileData[x][y];
+//                System.out.printf("%d %d, %d%n", x, y, counter);
+//                //if(tile == 1) System.out.println("TILE: " + tile);
+//                graphics2D.drawImage(tiles[tile].image, x1, y1, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+//                x1 += gameWindow.getTileSize();
+//
+//                //We like need to move down the y axis now and draw the tile there
+
                 int tile = mapTileData[x][y];
-                graphics2D.drawImage(tiles[tile].image, x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+                graphics2D.drawImage(tiles[tile].image, x1, y1, gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+                x1+=gameWindow.getTileSize();
+                if(x1 == gameWindow.maxWorldCol) {
+                    x1 = 0;
+                    y1+=gameWindow.getTileSize();
+                }
+//
             }
         }*/
 
-        System.out.println("Row: " + gameWindow.camera.getRow());
-        //Drawing the map using the camera
-        for(int x = gameWindow.camera.getCol(); x <= gameWindow.camera.getWidth(); x++) {
-            for(int y = gameWindow.camera.getRow(); y <= gameWindow.camera.getHeight(); y++) {
+        //NEW ATTEMPT
+        int i = 0;
+        int j = 0;
+
+        //Getting the tile data from the worldMapData[][] using the x,y from the current on screen coordinates and storing them in the screenMapData[][]
+        //This will allow us to retrieve the tiles from the world and render just that section on the screen
+        for (int y = gameWindow.screenY1; y < gameWindow.screenY2; y++) {
+            for (int x = gameWindow.screenX1; x < gameWindow.screenX2; x++) {
+                screenTileData[i][j] = mapTileData[x][y];
                 int tile = mapTileData[x][y];
-                graphics2D.drawImage(tiles[tile].image, x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+                graphics2D.drawImage(tiles[tile].image, i * gameWindow.getTileSize(), j * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);
+                i++;
+                if (i == gameWindow.getMaxScreenCol()) {
+                    i = 0;
+                    j++;
+                }
             }
         }
 
         //TODO: Have a debug flag? Lets me have useful info displayed?
-        boolean debug = false;
+        boolean debug = true;
+        boolean verbose = false;
 
         if(debug) {
             //Drawing a grid - Useful debugging info
-            graphics2D.setColor(Color.white);
+            graphics2D.setColor(Color.black);
             for (int y = 0; y < 12; y++) {
                 for (int x = 0; x < 16; x++) {
                     graphics2D.drawRect(x * gameWindow.getTileSize(), y * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize());
                 }
             }
+        }
+
+        if(verbose) {
+            //WORLD DEBUG
+            System.out.printf("%n%nINFO: World X1: %d,%d%nWorld X2: %d,%d%n", gameWindow.screenX1, gameWindow.screenY1, gameWindow.screenX2, gameWindow.screenY1);
+            System.out.printf("World Y1: %d,%d%nWorld Y2: %d,%d%n", gameWindow.screenX1, gameWindow.screenY2, gameWindow.screenX2, gameWindow.screenY2);
+
+            //CAMERA DEBUG
+            System.out.printf("INFO: Camera X1: %d,%d%nCamera X2: %d,%d%n", gameWindow.camera.getCameraX1(), gameWindow.camera.getCameraY1(), gameWindow.camera.getCameraX2(), gameWindow.camera.getCameraY1());
+            System.out.printf("Camera Y1: %d,%d%nCamera Y2: %d,%d%n", gameWindow.camera.getCameraX1(), gameWindow.camera.getCameraY2(), gameWindow.camera.getCameraX2(), gameWindow.camera.getCameraY2());
         }
     }
 }

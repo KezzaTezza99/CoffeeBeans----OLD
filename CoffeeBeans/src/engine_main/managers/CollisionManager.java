@@ -43,6 +43,8 @@ public class CollisionManager {
 
         int tile;
 
+        //TODO: why are we trigging down, left and right???
+        //System.out.printf("")
         switch (entity.direction) {
             case "up":
                 entitiesCurrentXInArray = (entity.x + (gameWindow.getTileSize()) / 2) / gameWindow.getTileSize();

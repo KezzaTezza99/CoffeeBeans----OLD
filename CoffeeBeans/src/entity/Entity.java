@@ -2,7 +2,6 @@ package entity;
 
 import engine_main.physics.AABB;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /** Entity is a base class for all entities in the game to inherit from it will store some useful information for the user to
@@ -12,7 +11,9 @@ import java.awt.image.BufferedImage;
 public class Entity {
     //GENERIC ENTITY STUFF
     public int x, y;                                        //Stores the entities x and y position
-    public int tilePosX, tilePosY;                          //The entities position when converted into the TileManager array that stores tile positions, useful for calculating what tile an entity is on
+    public int worldX, worldY;                              //As the world can be bigger than the screen this will store the players position in relation to the world / map data
+    public int tilePosScreenX, tileScreenPosY;                          //The entities position when converted into the TileManager array that stores tile positions, useful for calculating what tile an entity is on
+    public int tileWorldPosX, tileWorldPosY;
     public int speed;                                       //Stores the entities movement speed
 
     //ANIMATION STUFF

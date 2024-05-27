@@ -1,6 +1,8 @@
 package engine_main;
 import javax.swing.*;
 
+//TODO: Make methods have another param that can be used for everything I'm currently presuming such as starting x,y pos / screen size etc etc
+//TODO: Could add a JSON File or something that has this data that the engine can pre-read might be a better option? Lets the user have lots of default info easily accessible and changeable
 public class EntryPoint {
     public static void main(String[] args) {
         /*
@@ -24,7 +26,7 @@ public class EntryPoint {
         //Adding the game window to the JFrame
         //Here we can specify the tileSize, scale, aspect ratio etc. to match specific games you want to create
         //GameWindow gameWindow = new GameWindow(16, 3, 16, 12, 16, 12);
-        GameWindow gameWindow = new GameWindow(16, 3, 16, 12, 18, 14);
+        GameWindow gameWindow = new GameWindow(16, 3, 16, 12, 50, 50);
         window.add(gameWindow);
 
         //Making the window the size of the desired game window

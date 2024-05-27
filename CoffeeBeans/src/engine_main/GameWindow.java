@@ -35,9 +35,14 @@ public class GameWindow extends JPanel implements Runnable {
     final int screenWidth;                          //The width of the game window
     final int screenHeight;                         //The height of the game window
 
+    //TODO: Make private
     //WORLD SETTINGS
     public final int maxWorldCol;                          //The max amount of tiles a world can store on the X
     public final int maxWorldRow;                          //The max amount of tiles a world can store on the Y
+
+    //SCREEN -> WORLD this is where inside the world the screen will be rendered
+    public int screenX1, screenX2;
+    public int screenY1, screenY2;
 
     //Using threads to create delta time for the game loop
     Thread gameThread;
@@ -83,6 +88,12 @@ public class GameWindow extends JPanel implements Runnable {
         //Setting the world settings
         this.maxWorldCol = maxWorldCol;
         this.maxWorldRow = maxWorldRow;
+
+        //Default screen inside world
+        this.screenX1 = (maxWorldCol / 2) - (maxScreenCol / 2);
+        this.screenX2 = (maxWorldCol / 2) + (maxScreenCol / 2);
+        this.screenY1 = (maxWorldRow / 2) - (maxScreenRow / 2);
+        this.screenY2 = (maxWorldRow / 2) + (maxScreenRow / 2);
 
         init();
 
@@ -138,7 +149,8 @@ public class GameWindow extends JPanel implements Runnable {
             }
             if (timer >= 1000000000) {
                 //System.out.printf("FPS: %d%n", drawCount);
-                camera.cameraInfo();
+                //camera.cameraInfo();
+                //camera.simulateYPos(player.y);
                 drawCount = 0;
                 timer = 0;
             }
@@ -167,7 +179,6 @@ public class GameWindow extends JPanel implements Runnable {
         graphics2D.dispose();
     }
 
-
     public int getCurrentColumnPosition(int xPos) { return xPos / tileSize; }
     public int getCurrentRowPos(int yPos) { return yPos / tileSize; }
 
@@ -178,6 +189,12 @@ public class GameWindow extends JPanel implements Runnable {
             return true;
         }
         return false;
+    }
+
+    public void recalculateScreenCoordinates() {
+        //The player has most likely collided with camera bounds resulting in the world moving, lets re-calculate the screen
+        this.screenX1 = (maxWorldCol / 2) - (maxScreenCol / 2);//nope
+
     }
 
     //------------------------------------------------------------------------------------------------------------------
