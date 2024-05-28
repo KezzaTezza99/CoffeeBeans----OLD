@@ -3,6 +3,8 @@ import javax.swing.*;
 
 //TODO: Make methods have another param that can be used for everything I'm currently presuming such as starting x,y pos / screen size etc etc
 //TODO: Could add a JSON File or something that has this data that the engine can pre-read might be a better option? Lets the user have lots of default info easily accessible and changeable
+//TODO: Logging system that just prints stuff to the console for me - useful for debugging and stuff
+//TODO: WAY THE ENEMY IS DRAWN NEEDS TO CHANGE - he stays in the same place even if the player has moved to a different world location
 public class EntryPoint {
     public static void main(String[] args) {
         /*

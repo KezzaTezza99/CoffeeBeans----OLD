@@ -147,6 +147,7 @@ public class TileManager {
         //This will allow us to retrieve the tiles from the world and render just that section on the screen
         for (int y = gameWindow.screenY1; y < gameWindow.screenY2; y++) {
             for (int x = gameWindow.screenX1; x < gameWindow.screenX2; x++) {
+                //System.out.printf("Y:X INSIDE RENDER LOOP: %d : %d%n", y, x);
                 screenTileData[i][j] = mapTileData[x][y];
                 int tile = mapTileData[x][y];
                 graphics2D.drawImage(tiles[tile].image, i * gameWindow.getTileSize(), j * gameWindow.getTileSize(), gameWindow.getTileSize(), gameWindow.getTileSize(), null);

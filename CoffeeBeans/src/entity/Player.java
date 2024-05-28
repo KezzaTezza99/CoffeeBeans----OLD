@@ -77,15 +77,23 @@ public class Player extends Entity {
         if (input.upPressed && canMoveUp) {
             direction = "up";
             y -= speed;
+            worldY -= speed;
+            collisionBox.setY(y);
         } else if (input.downPressed && canMoveDown) {
             direction = "down";
             y += speed;
+            worldY += speed;
+            collisionBox.setY(y);
         } else if (input.leftPressed && canMoveLeft) {
             direction = "left";
             x -= speed;
+            tilePosScreenX = x / gameWindow.getTileSize();
+            collisionBox.setX(x);
         } else if (input.rightPressed && canMoveRight) {
             direction = "right";
             x += speed;
+            tilePosScreenX = x / gameWindow.getTileSize();
+            collisionBox.setX(x);
         }
 
         //Checking collisions
@@ -107,8 +115,8 @@ public class Player extends Entity {
         }
 
         //TODO: Set these with the player movement inside the if statements
-        collisionBox.setX(x);
-        collisionBox.setY(y);
+        //collisionBox.setX(x);
+        //collisionBox.setY(y);
 
         tilePosScreenX = x / gameWindow.getTileSize();
         tileScreenPosY = y / gameWindow.getTileSize();
@@ -116,22 +124,35 @@ public class Player extends Entity {
 
     //TODO: Could probably just have one method that checks all the bounds instead but this is fine for testing rn
     public void playerHasHitCamBounds() {
-        //First we check the upper bounds
+        System.out.printf("Outside IF Screen Y1: %d Screen Y2: %d %n", gameWindow.screenY1, gameWindow.screenY2);
+        //As the player is about to reach the top of the screen we should move the world downwards to give the illusion they've moved up the world?
         if(gameWindow.camera.hasHitUpperBounds(tileScreenPosY)) {
-
+            //Changing the y position of the rendered world
+            gameWindow.screenY1 -= 6;
+            gameWindow.screenY2 -= 6;
+            System.out.printf("Inside IF Screen Y1: %d Screen Y2: %d %n", gameWindow.screenY1, gameWindow.screenY2);
+            //The player should be at the bottom of the map in the final tile
+            gameWindow.player.y = gameWindow.getHeight() - gameWindow.getTileSize();
         }
 
         if(gameWindow.camera.hasHitLowerBounds(tileScreenPosY)) {
-            //gameWindow.camera.setY(192);
-            //gameWindow.camera.setCamera();
-        }
-
-        if(gameWindow.camera.hasHitLeftBounds(tilePosScreenX)) {
-
-        }
-
-        if(gameWindow.camera.hasHitRightBounds(tilePosScreenX)) {
-
+            //Changing the y position of the rendered world
+            gameWindow.screenY1 += 6;
+            gameWindow.screenY2 += 6;
+            //Moving the player to be back in the centre of the screen
+            gameWindow.player.y = gameWindow.getHeight() / 2;
+        } else if(gameWindow.camera.hasHitLeftBounds(tilePosScreenX)) {
+            //Changing the x position of the rendered world
+            gameWindow.screenX1 -= 8;
+            gameWindow.screenX2 -= 8;
+            //Moving the player to be back in the centre of the screen
+            gameWindow.player.x = gameWindow.getWidth() / 2;
+        } else if(gameWindow.camera.hasHitRightBounds(tilePosScreenX)) {
+            //Changing the x position of the rendered world
+            gameWindow.screenX1 += 8;
+            gameWindow.screenX2 += 8;
+            //Moving the player to be back in the centre of the screen
+            gameWindow.player.x = gameWindow.getWidth() / 2;
         }
     }
 

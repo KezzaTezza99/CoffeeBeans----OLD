@@ -172,9 +172,7 @@ public class GameWindow extends JPanel implements Runnable {
         //Drawing the player
         player.draw(graphics2D);
         //Drawing the enemy
-        enemy.draw(graphics2D);
-        //Drawing the camera
-        camera.drawCamera(graphics2D);
+        //enemy.draw(graphics2D);
         //Disposing of the graphics
         graphics2D.dispose();
     }
